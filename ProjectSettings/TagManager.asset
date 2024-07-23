@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Boundary
   - Coin
+  - Car
   layers:
   - Default
   - TransparentFX

@@ -2,5 +2,7 @@ enum Tags
 {
 
     Boundary,
-    Coin
+    Coin,
+    Finish,
+    Car
 }

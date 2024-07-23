@@ -20,22 +20,24 @@ public class CarController : MonoBehaviour
     // Components
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI lifeText;
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
     [SerializeField]
     private CameraController cameraController = null;
+    [SerializeField] private GameObject popover;
     
-    private float xInput;
-    private float zInput;
-    private float movingSpeed = 30f;
-    private int collectedCoinsCount = 0;
-    private int currentLive;
+    private float _xInput;
+    private float _zInput;
+    private float _movingSpeed = 30f;
+    private int _collectedCoinsCount = 0;
+    private int _currentLive;
+    private bool _isLevelFinished = false;
     
     void Awake()
     {
-        currentLive = LifeManager.CurrentLive;
-        lifeText.text = $"{CarControllerConstant.Life + currentLive}";
+        _currentLive = LifeManager.CurrentLive;
+        lifeText.text = $"{CarControllerConstant.Life + _currentLive}";
 
-        audioSource = GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
         if (cameraController == null)
         {
             this.cameraController = this.gameObject.GetComponent<CameraController>();
@@ -44,22 +46,25 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (_isLevelFinished) return;
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            movingSpeed = movingSpeed + 15f;
+            _movingSpeed = _movingSpeed + 15f;
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            movingSpeed = movingSpeed - 15f;
+            _movingSpeed = _movingSpeed - 15f;
         }
 
-        xInput = Input.GetAxis(CarControllerConstant.Horizontal) * Time.deltaTime * movingSpeed;
-        zInput = Input.GetAxis(CarControllerConstant.Vertical) * Time.deltaTime * movingSpeed;
+        _xInput = Input.GetAxis(CarControllerConstant.Horizontal) * Time.deltaTime * _movingSpeed;
+        _zInput = Input.GetAxis(CarControllerConstant.Vertical) * Time.deltaTime * _movingSpeed;
 
     }
 
     void FixedUpdate()
     {
+        if (_isLevelFinished) return;
         MoveCar();
     }
 
@@ -70,32 +75,40 @@ public class CarController : MonoBehaviour
             UpdateLife();
             RestartTheLevel();
         }
+
+        if (other.CompareTag(Tags.Finish.ToString()))
+        {
+            _isLevelFinished = true;
+            popover.SetActive(true);
+        }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (!other.gameObject.CompareTag(Tags.Coin.ToString())) return;
-        PlayMusic();
-        UpdateScore();
-        Destroy(other.gameObject);
-        cameraController.GoTo(transform.position);
+        if (other.gameObject.CompareTag(Tags.Coin.ToString()))
+        {
+            PlayMusic();
+            UpdateScore();
+            Destroy(other.gameObject);
+            cameraController.GoTo(transform.position);
+        }
     }
 
     private void UpdateScore()
     {
-        collectedCoinsCount++;
-        scoreText.text = $"{CarControllerConstant.Score + collectedCoinsCount}";
+        _collectedCoinsCount++;
+        scoreText.text = $"{CarControllerConstant.Score + _collectedCoinsCount}";
     }
 
     private void UpdateLife()
     {
         LifeManager.DecrementLife();
-        lifeText.text = $"{CarControllerConstant.Life + currentLive}";
+        lifeText.text = $"{CarControllerConstant.Life + _currentLive}";
     }
 
     private void MoveCar()
     {
-        transform.Translate(xInput, 0f, zInput);
+        transform.Translate(_xInput, 0f, _zInput);
     }
 
     private void RestartTheLevel()
@@ -107,11 +120,11 @@ public class CarController : MonoBehaviour
     {
         if (MusicManager.ShouldPlayMusic())
         {
-            audioSource.Play();
+            _audioSource.Play();
         }
         else
         {
-            audioSource.Pause();
+            _audioSource.Pause();
         }
     }
 }
