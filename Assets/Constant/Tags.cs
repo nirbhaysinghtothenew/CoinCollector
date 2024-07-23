@@ -1,0 +1,6 @@
+enum Tags
+{
+
+    Boundary,
+    Coin
+}
