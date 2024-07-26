@@ -87,9 +87,10 @@ public class CarController : MonoBehaviour
         if (other.gameObject.CompareTag(Tags.Enemy.ToString()))
         {
             DecreaseScore();
-            Instantiate(particle, other.gameObject.transform.position, other.gameObject.transform.rotation);
+            ParticleSystem newParticle = Instantiate(particle, other.gameObject.transform.position, other.gameObject.transform.rotation);
             particle.Play();
             Destroy(other.gameObject);
+            Destroy(newParticle, 2f);
         }
     }
 
