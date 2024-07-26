@@ -4,5 +4,6 @@ enum Tags
     Boundary,
     Coin,
     Finish,
-    Car
+    Car,
+    Enemy
 }

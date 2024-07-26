@@ -7,6 +7,7 @@ TagManager:
   - Boundary
   - Coin
   - Car
+  - Enemy
   layers:
   - Default
   - TransparentFX

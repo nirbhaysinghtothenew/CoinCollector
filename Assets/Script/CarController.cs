@@ -24,14 +24,15 @@ public class CarController : MonoBehaviour
     [SerializeField]
     private CameraController cameraController = null;
     [SerializeField] private GameObject popover;
-    
+    [SerializeField] private ParticleSystem particle;
+
     private float _xInput;
     private float _zInput;
-    private float _movingSpeed = 30f;
+    private float _movingSpeed = 35f;
     private int _collectedCoinsCount = 0;
     private int _currentLive;
     private bool _isLevelFinished = false;
-    
+
     void Awake()
     {
         _currentLive = LifeManager.CurrentLive;
@@ -42,6 +43,7 @@ public class CarController : MonoBehaviour
         {
             this.cameraController = this.gameObject.GetComponent<CameraController>();
         }
+        particle.Pause();
     }
 
     void Update()
@@ -81,6 +83,14 @@ public class CarController : MonoBehaviour
             _isLevelFinished = true;
             popover.SetActive(true);
         }
+
+        if (other.gameObject.CompareTag(Tags.Enemy.ToString()))
+        {
+            DecreaseScore();
+            Instantiate(particle, other.gameObject.transform.position, other.gameObject.transform.rotation);
+            particle.Play();
+            Destroy(other.gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -88,15 +98,21 @@ public class CarController : MonoBehaviour
         if (other.gameObject.CompareTag(Tags.Coin.ToString()))
         {
             PlayMusic();
-            UpdateScore();
+            IncreaseScore();
             Destroy(other.gameObject);
             cameraController.GoTo(transform.position);
         }
     }
 
-    private void UpdateScore()
+    private void IncreaseScore()
     {
         _collectedCoinsCount++;
+        scoreText.text = $"{CarControllerConstant.Score + _collectedCoinsCount}";
+    }
+
+    private void DecreaseScore()
+    {
+        _collectedCoinsCount--;
         scoreText.text = $"{CarControllerConstant.Score + _collectedCoinsCount}";
     }
 
