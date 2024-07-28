@@ -8,7 +8,8 @@ public enum GameScene
 {
     Launch,
     MainMenu,
-    Level1
+    Level1,
+    Level2
 }
 
 public class SceneManager
