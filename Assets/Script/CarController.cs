@@ -1,6 +1,7 @@
 using Manager;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Script
 {
@@ -23,7 +24,7 @@ namespace Script
         private CameraController cameraController = null;
         [SerializeField] private GameObject popover;
         [SerializeField] private ParticleSystem particle;
-        [SerializeField] private GameObject panel;
+        [FormerlySerializedAs("panel")] [SerializeField] private GameObject gameOverPanel;
 
         private float _xInput;
         private float _zInput;
@@ -79,8 +80,7 @@ namespace Script
 
             if (other.CompareTag(Tags.Finish.ToString()))
             {
-                _isLevelFinished = true;
-                panel.SetActive(true);
+                GameFinished();
             }
 
             if (other.gameObject.CompareTag(Tags.Enemy.ToString()))
@@ -127,9 +127,18 @@ namespace Script
             transform.Translate(_xInput, 0f, _zInput);
         }
 
+        private void GameFinished()
+        {
+            _isLevelFinished = true;
+            gameOverPanel.SetActive(true);
+        }
+
         public void RestartTheLevel()
         {
-            SceneManager.LoadScene(GameScene.Level1);
+            if (LifeManager.CurrentLive > 0)
+                SceneManager.LoadScene(GameScene.Level1);
+            else
+                GameFinished();
         }
 
         public void LoadLevel2()
@@ -140,13 +149,9 @@ namespace Script
         private void PlayMusic()
         {
             if (MusicManager.ShouldPlayMusic())
-            {
                 _audioSource.Play();
-            }
             else
-            {
                 _audioSource.Pause();
-            }
         }
     }
 }
