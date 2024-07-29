@@ -14,8 +14,8 @@ namespace Script
 
         private void Start()
         {
-            camera1.enabled = false;
-            camera2.enabled = true;
+            camera1.enabled = true;
+            camera2.enabled = false;
         }
 
         private void Update()

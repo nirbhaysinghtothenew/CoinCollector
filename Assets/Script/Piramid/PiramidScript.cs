@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Script.Piramid
@@ -10,12 +9,12 @@ namespace Script.Piramid
     }
     
     public class PiramidScript: MonoBehaviour
-    {
-        [SerializeField] private Animator _animator;
+    { 
+        [SerializeField] private Animator animator;
 
         private void Start()
         {
-            _animator.SetTrigger(PiramidScriptTrigger.Ideal.ToString());
+            animator.SetTrigger(PiramidScriptTrigger.Ideal.ToString());
         }
         
         
@@ -23,7 +22,7 @@ namespace Script.Piramid
         {
             if (other.CompareTag(Tags.Car.ToString()))
             {
-                _animator.SetTrigger(PiramidScriptTrigger.Collide.ToString());
+                animator.SetTrigger(PiramidScriptTrigger.Collide.ToString());
             }
         }
     }

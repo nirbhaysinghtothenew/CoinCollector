@@ -89,7 +89,7 @@ namespace Script
                 ParticleSystem newParticle = Instantiate(particle, other.gameObject.transform.position, other.gameObject.transform.rotation);
                 particle.Play();
                 Destroy(other.gameObject);
-                Destroy(newParticle, 2f);
+                Destroy(newParticle, 0.5f);
             }
         }
 
